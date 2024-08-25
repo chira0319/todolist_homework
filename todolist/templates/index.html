@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+  {% block content %}
+<h1>todo list</h1>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="想要做什麼?" aria-label="想要做什麼?" aria-describedby="button-addon2" name="wanttodo" id="wanttodo">
+        <button class="btn btn-outline-secondary" type="button" id="button-addon2" type="submit">送出</button>
+        <!-- <input type="text" name="wanttodo" id="wanttodo" placeholder="想要做什麼?" />
+        <button type="submit">送出</button> -->
+      </div>
+    </form>
+
+    <table class="table">
+      <thead>
+        <tr>
+          
+          <th>狀態</th>
+          <th>待做事項</th>
+          <th>編輯</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for a in views_for_html_list %}
+        <tr>
+            <td>
+              <form method="post" action="{% url 'urls_app_todo:toggle_completed' a.todo_id %}">
+                {% csrf_token %}
+                <input type="hidden" name="todo_id" value="{{ a.todo_id }}">
+                <label>
+                  <input type="checkbox" name="completed" value="1" onchange="this.form.submit()" {% if a.completed %}checked{% endif %}> 
+                </form>
+                {% if a.completed %}
+                已完成
+                {% else %}
+                未完成
+                {% endif %}
+              </label>
+        </td>
+            <td>{{ a.todo }}</td>
+            <td>
+                
+              <a href="{% url 'urls_app_todo:urls_path_delete' a.todo_id %}" class="btn btn-danger" onclick="return confirm('真的要刪除嗎?')">刪除</a>
+
+
+            </td>
+        </tr>
+        {% endfor %}       
+    </tbody>
+    </table>
+  {% endblock %}
